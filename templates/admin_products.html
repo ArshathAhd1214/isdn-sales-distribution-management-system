@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management | ISDN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen">
+
+    <div class="flex min-h-screen">
+        <aside class="w-72 bg-slate-950 text-white p-6 hidden md:flex flex-col">
+            <div class="mb-10">
+                <h1 class="text-2xl font-bold">ISDN Admin</h1>
+                <p class="text-slate-400 text-sm mt-1">Sales Distribution Platform</p>
+            </div>
+
+            <nav class="space-y-3 text-sm">
+                <a href="/admin/dashboard" class="block px-4 py-3 rounded-xl hover:bg-slate-800 transition">Dashboard</a>
+                <a href="/admin/products" class="block px-4 py-3 rounded-xl bg-cyan-600 font-medium">Product Management</a>
+                <a href="/admin/orders" class="block px-4 py-3 rounded-xl hover:bg-slate-800 transition">Order Management</a>
+                <a href="/admin/deliveries" class="block px-4 py-3 rounded-xl hover:bg-slate-800 transition">Delivery Tracking</a>
+                <a href="/logout" class="block px-4 py-3 rounded-xl hover:bg-red-600 transition">Logout</a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-6 md:p-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-800">Product Management</h2>
+                    <p class="text-slate-500 mt-1">Manage products, stock levels and availability</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <a href="/admin/products/add"
+   class="bg-cyan-600 text-white px-5 py-3 rounded-xl font-medium hover:bg-cyan-500 transition">
+   Add Product
+</a>
+                    <a href="/admin/products/export" class="bg-slate-900 text-white px-5 py-3 rounded-xl font-medium hover:bg-slate-800 transition">
+                        Export List
+                    </a>
+                </div>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="mb-4 rounded-lg px-4 py-3 text-sm font-medium {% if category == 'error' %}bg-red-100 text-red-700 border border-red-200{% else %}bg-green-100 text-green-700 border border-green-200{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <p class="text-sm text-slate-500">Total Products</p>
+                    <h3 class="text-3xl font-bold mt-2">{{ total_products }}</h3>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <p class="text-sm text-slate-500">In Stock</p>
+                    <h3 class="text-3xl font-bold mt-2 text-green-600">{{ in_stock }}</h3>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <p class="text-sm text-slate-500">Low Stock</p>
+                    <h3 class="text-3xl font-bold mt-2 text-amber-600">{{ low_stock }}</h3>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <p class="text-sm text-slate-500">Out of Stock</p>
+                    <h3 class="text-3xl font-bold mt-2 text-red-600">{{ out_of_stock }}</h3>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200 mb-8">
+                <form method="GET" action="/admin/products" class="flex flex-col md:flex-row gap-4">
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ search }}"
+                        placeholder="Search product name..."
+                        class="flex-1 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-600"
+                    >
+
+                    <select name="category" class="border border-slate-300 rounded-xl px-4 py-3">
+                        <option {% if not category or category == 'All Categories' %}selected{% endif %}>All Categories</option>
+                        <option value="Beverages" {% if category == 'Beverages' %}selected{% endif %}>Beverages</option>
+                        <option value="Personal Care" {% if category == 'Personal Care' %}selected{% endif %}>Personal Care</option>
+                        <option value="Home Cleaning" {% if category == 'Home Cleaning' %}selected{% endif %}>Home Cleaning</option>
+                        <option value="Packaged Foods" {% if category == 'Packaged Foods' %}selected{% endif %}>Packaged Foods</option>
+                    </select>
+
+                    <select name="stock_filter" class="border border-slate-300 rounded-xl px-4 py-3">
+                        <option {% if not stock_filter or stock_filter == 'All Stock Status' %}selected{% endif %}>All Stock Status</option>
+                        <option value="In Stock" {% if stock_filter == 'In Stock' %}selected{% endif %}>In Stock</option>
+                        <option value="Low Stock" {% if stock_filter == 'Low Stock' %}selected{% endif %}>Low Stock</option>
+                        <option value="Out of Stock" {% if stock_filter == 'Out of Stock' %}selected{% endif %}>Out of Stock</option>
+                    </select>
+
+                    <button type="submit" class="bg-cyan-600 text-white px-5 py-3 rounded-xl font-medium hover:bg-cyan-500 transition">
+                        Search
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
+                <div class="flex justify-between items-center mb-5">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800">Product Inventory</h3>
+                        <p class="text-slate-500 text-sm">Live stock monitoring and management</p>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-left border-b border-slate-200 text-slate-500">
+                                <th class="py-3">Product</th>
+                                <th class="py-3">Category</th>
+                                <th class="py-3">Price</th>
+                                <th class="py-3">Stock</th>
+                                <th class="py-3">Status</th>
+                                <th class="py-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-700">
+                            {% if products %}
+                                {% for product in products %}
+                                    <tr class="border-b border-slate-100">
+                                        <td class="py-4 font-medium">{{ product[1] }}</td>
+                                        <td class="py-4">{{ product[2] }}</td>
+                                        <td class="py-4">Rs. {{ "%.2f"|format(product[3]) }}</td>
+                                        <td class="py-4">{{ product[4] }}</td>
+                                        <td class="py-4">
+                                            {% if product[4] == 0 %}
+                                                <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs">Out of Stock</span>
+                                            {% elif product[4] <= 25 %}
+                                                <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs">Low Stock</span>
+                                            {% else %}
+                                                <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">In Stock</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="py-4">
+                                            <div class="flex flex-wrap gap-2">
+                                                <form method="POST" action="/admin/products/update-stock/{{ product[0] }}" class="flex gap-2">
+                                                    <input
+                                                        type="number"
+                                                        name="stock_quantity"
+                                                        min="0"
+                                                        value="{{ product[4] }}"
+                                                        class="w-24 border border-slate-300 rounded-lg px-3 py-2 text-xs"
+                                                    >
+                                                    <button type="submit" class="bg-cyan-600 text-white px-3 py-2 rounded-lg text-xs">
+                                                        Update Stock
+                                                    </button>
+                                                </form>
+
+                                                <a href="/admin/products/edit/{{ product[0] }}" class="bg-slate-900 text-white px-3 py-2 rounded-lg text-xs">
+                                                    Edit
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="py-6 text-center text-slate-400">
+                                        No products found.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

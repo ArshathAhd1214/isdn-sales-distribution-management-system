@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart | ISDN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto p-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-800">My Cart</h1>
+                <p class="text-slate-500 mt-1">Review your items, update quantities, and place your order.</p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ url_for('customer_products') }}" class="bg-slate-900 text-white px-5 py-3 rounded-xl hover:bg-slate-800 transition">
+                    Continue Shopping
+                </a>
+                <a href="{{ url_for('customer_orders') }}" class="bg-cyan-600 text-white px-5 py-3 rounded-xl hover:bg-cyan-500 transition">
+                    My Orders
+                </a>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="space-y-3 mb-6">
+                    {% for category, message in messages %}
+                        <div class="rounded-xl px-4 py-3 text-sm font-medium border {% if category == 'error' %}bg-red-100 text-red-700 border-red-200{% else %}bg-green-100 text-green-700 border-green-200{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if cart_items %}
+            <div class="grid lg:grid-cols-3 gap-6 items-start">
+                <div class="lg:col-span-2 space-y-4">
+                    {% for item in cart_items %}
+                        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
+                            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex flex-wrap items-center gap-3 mb-3">
+                                        <span class="inline-block bg-cyan-100 text-cyan-700 px-3 py-1 rounded-full text-sm font-medium">
+                                            {{ item.category }}
+                                        </span>
+                                        {% if item.stock_quantity == 0 %}
+                                            <span class="text-sm font-medium text-red-600">Out of stock</span>
+                                        {% elif item.stock_quantity <= 25 %}
+                                            <span class="text-sm font-medium text-amber-600">Low stock: {{ item.stock_quantity }} left</span>
+                                        {% else %}
+                                            <span class="text-sm font-medium text-green-600">In stock: {{ item.stock_quantity }} available</span>
+                                        {% endif %}
+                                    </div>
+
+                                    <h2 class="text-2xl font-bold text-slate-800 mb-2 break-words">{{ item.product_name }}</h2>
+                                    <div class="grid sm:grid-cols-3 gap-4 text-sm">
+                                        <div class="bg-slate-50 rounded-2xl border border-slate-200 p-4">
+                                            <p class="text-slate-500 mb-1">Unit Price</p>
+                                            <p class="font-bold text-cyan-600">Rs. {{ '%.2f'|format(item.price) }}</p>
+                                        </div>
+                                        <div class="bg-slate-50 rounded-2xl border border-slate-200 p-4">
+                                            <p class="text-slate-500 mb-1">Quantity</p>
+                                            <p class="font-semibold text-slate-800">{{ item.quantity }}</p>
+                                        </div>
+                                        <div class="bg-slate-50 rounded-2xl border border-slate-200 p-4">
+                                            <p class="text-slate-500 mb-1">Subtotal</p>
+                                            <p class="font-bold text-slate-800">Rs. {{ '%.2f'|format(item.price * item.quantity) }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="w-full lg:w-72 space-y-3">
+                                    <form method="POST" action="{{ url_for('update_cart', product_id=item.product_id) }}" class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Update quantity</label>
+                                        <div class="flex gap-3">
+                                            <input
+                                                type="number"
+                                                name="quantity"
+                                                min="0"
+                                                max="{{ item.stock_quantity }}"
+                                                value="{{ item.quantity }}"
+                                                class="flex-1 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-600"
+                                            >
+                                            <button type="submit" class="bg-slate-900 text-white px-5 py-3 rounded-xl hover:bg-slate-800 transition whitespace-nowrap">
+                                                Update
+                                            </button>
+                                        </div>
+                                        <p class="text-xs text-slate-500 mt-2">Set quantity to 0 to remove this item.</p>
+                                    </form>
+
+                                    <form method="POST" action="{{ url_for('remove_from_cart', product_id=item.product_id) }}">
+                                        <button type="submit" class="w-full bg-red-50 text-red-600 border border-red-200 py-3 rounded-xl hover:bg-red-100 transition font-medium">
+                                            Remove Item
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="lg:sticky lg:top-6">
+                    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-6">Order Summary</h2>
+
+                        <div class="space-y-4 mb-6">
+                            <div class="flex items-center justify-between text-slate-600">
+                                <span>Total Items</span>
+                                <span class="font-semibold text-slate-800">{{ cart_items|length }}</span>
+                            </div>
+                            <div class="flex items-center justify-between text-slate-600">
+                                <span>Order Total</span>
+                                <span class="text-2xl font-bold text-cyan-600">Rs. {{ '%.2f'|format(total_amount) }}</span>
+                            </div>
+                        </div>
+
+                        <form method="POST" action="{{ url_for('checkout_cart') }}">
+                            <button type="submit" class="w-full bg-cyan-600 text-white py-4 rounded-2xl font-medium hover:bg-cyan-500 transition shadow-sm">
+                                Proceed to Checkout
+                            </button>
+                        </form>
+
+                        <a href="{{ url_for('customer_products') }}" class="block text-center mt-4 bg-slate-900 text-white py-4 rounded-2xl font-medium hover:bg-slate-800 transition shadow-sm">
+                            Add More Products
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-12 text-center">
+                <div class="max-w-xl mx-auto">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-3">Your cart is empty</h2>
+                    <p class="text-slate-500 mb-8">You have not added any products yet. Browse the product page and add items to continue.</p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <a href="{{ url_for('customer_products') }}" class="bg-cyan-600 text-white px-6 py-4 rounded-2xl hover:bg-cyan-500 transition font-medium">
+                            Browse Products
+                        </a>
+                        <a href="{{ url_for('customer_orders') }}" class="bg-slate-900 text-white px-6 py-4 rounded-2xl hover:bg-slate-800 transition font-medium">
+                            View My Orders
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

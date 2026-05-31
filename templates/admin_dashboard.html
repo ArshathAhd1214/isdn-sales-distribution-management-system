@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | ISDN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-100 min-h-screen">
+
+    <div class="flex min-h-screen">
+
+        <aside class="w-72 bg-slate-950 text-white p-6 hidden md:flex flex-col">
+            <div class="mb-10">
+                <h1 class="text-2xl font-bold">ISDN Admin</h1>
+                <p class="text-slate-400 text-sm mt-1">Sales Distribution Platform</p>
+            </div>
+
+            <nav class="space-y-3 text-sm">
+                <a href="/admin/dashboard" class="block px-4 py-3 rounded-xl bg-cyan-600 font-medium">Dashboard</a>
+                <a href="/admin/products" class="block px-4 py-3 rounded-xl hover:bg-slate-800 transition">Product Management</a>
+                <a href="/admin/orders" class="block px-4 py-3 rounded-xl hover:bg-slate-800 transition">Order Management</a>
+                <a href="/admin/deliveries" class="block px-4 py-3 rounded-xl hover:bg-slate-800 transition">Delivery Tracking</a>
+                <a href="/logout" class="block px-4 py-3 rounded-xl hover:bg-red-600 transition">Logout</a>
+            </nav>
+
+            <div class="mt-auto pt-8">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+                    <p class="text-sm text-slate-300">Logged in as</p>
+                    <h3 class="font-semibold mt-1">{{ name }}</h3>
+                    <p class="text-xs text-slate-400 mt-1">Staff / Admin Access</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-6 md:p-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-800">Dashboard Overview</h2>
+                    <p class="text-slate-500 mt-1">Welcome back, {{ name }}</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <a href="/admin/products" class="bg-cyan-600 text-white px-5 py-3 rounded-xl font-medium hover:bg-cyan-500 transition">
+                        Product Management
+                    </a>
+                    <a href="/admin/orders" class="bg-slate-900 text-white px-5 py-3 rounded-xl font-medium hover:bg-slate-800 transition">
+                        Order Management
+                    </a>
+                </div>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="mb-4 rounded-lg px-4 py-3 text-sm font-medium {% if category == 'error' %}bg-red-100 text-red-700 border border-red-200{% else %}bg-green-100 text-green-700 border border-green-200{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
+                    <p class="text-sm text-slate-500">Total Products</p>
+                    <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ total_products }}</h3>
+                    <p class="text-sm text-green-600 mt-2">Live from database</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
+                    <p class="text-sm text-slate-500">Active Orders</p>
+                    <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ active_orders }}</h3>
+                    <p class="text-sm text-cyan-600 mt-2">Real-time order count</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
+                    <p class="text-sm text-slate-500">Pending Deliveries</p>
+                    <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ pending_deliveries }}</h3>
+                    <p class="text-sm text-amber-600 mt-2">Current delivery workload</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
+                    <p class="text-sm text-slate-500">Low Stock Items</p>
+                    <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ low_stock }}</h3>
+                    <p class="text-sm text-red-600 mt-2">Needs attention</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+                <div class="xl:col-span-2 bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-800">Order Activity</h3>
+                            <p class="text-slate-500 text-sm">Recent daily order count</p>
+                        </div>
+                        <span class="text-sm bg-cyan-100 text-cyan-700 px-3 py-1 rounded-full">Live View</span>
+                    </div>
+
+                    <div class="h-80">
+                        <canvas id="orderChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">Live Stock Status</h3>
+
+                    {% if stock_data %}
+                        <div class="space-y-4">
+                            {% for item in stock_data %}
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span>{{ item.product_name }}</span>
+                                        <span class="font-semibold {% if item.color == 'green' %}text-green-600{% elif item.color == 'cyan' %}text-cyan-600{% elif item.color == 'amber' %}text-amber-600{% else %}text-red-600{% endif %}">
+                                            {{ item.stock_quantity }} units
+                                        </span>
+                                    </div>
+
+                                    <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                                        <div
+                                            class="stock-bar h-3 rounded-full {% if item.color == 'green' %}bg-green-500{% elif item.color == 'cyan' %}bg-cyan-500{% elif item.color == 'amber' %}bg-amber-500{% else %}bg-red-500{% endif %}"
+                                            data-width="{{ item.percentage }}">
+                                        </div>
+                                    </div>
+
+                                    <p class="text-xs text-slate-500 mt-1">{{ item.status_text }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-slate-400">No stock data found.</p>
+                    {% endif %}
+
+                    <a href="/admin/products" class="block mt-6 text-center bg-slate-900 text-white py-3 rounded-xl hover:bg-slate-800 transition">
+                        View All Products
+                    </a>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
+                <div class="flex justify-between items-center mb-5">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800">Recent Orders</h3>
+                        <p class="text-slate-500 text-sm">Latest orders from database</p>
+                    </div>
+                    <a href="/admin/orders" class="text-cyan-600 font-medium hover:underline">Open Order Management</a>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-left border-b border-slate-200 text-slate-500">
+                                <th class="py-3">Order ID</th>
+                                <th class="py-3">Customer</th>
+                                <th class="py-3">Amount</th>
+                                <th class="py-3">Status</th>
+                                <th class="py-3">Date</th>
+                                <th class="py-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-700">
+                            {% if recent_orders %}
+                                {% for order in recent_orders %}
+                                    <tr class="border-b border-slate-100">
+                                        <td class="py-4">#ORD-{{ order[0] }}</td>
+                                        <td class="py-4">{{ order[1] }}</td>
+                                        <td class="py-4">Rs. {{ "%.2f"|format(order[2]) }}</td>
+                                        <td class="py-4">
+                                            {% if order[3] == "Pending" %}
+                                                <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs">Pending</span>
+                                            {% elif order[3] == "Confirmed" %}
+                                                <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">Confirmed</span>
+                                            {% elif order[3] == "Packed" %}
+                                                <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs">Packed</span>
+                                            {% elif order[3] == "Out for Delivery" %}
+                                                <span class="bg-cyan-100 text-cyan-700 px-3 py-1 rounded-full text-xs">Out for Delivery</span>
+                                            {% elif order[3] == "Delivered" %}
+                                                <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs">Delivered</span>
+                                            {% elif order[3] == "Cancelled" %}
+                                                <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs">Cancelled</span>
+                                            {% else %}
+                                                <span class="bg-slate-200 text-slate-700 px-3 py-1 rounded-full text-xs">{{ order[3] }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="py-4">{{ order[4] }}</td>
+                                        <td class="py-4">
+                                            <a href="/admin/orders" class="text-cyan-600 font-medium">Manage</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="py-6 text-center text-slate-400">
+                                        No recent orders available.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script id="chart-labels-data" type="application/json">{{ chart_labels | tojson | safe }}</script>
+    <script id="chart-values-data" type="application/json">{{ chart_values | tojson | safe }}</script>
+
+    <script>
+        const labelsElement = document.getElementById('chart-labels-data');
+        const valuesElement = document.getElementById('chart-values-data');
+
+        const chartLabels = labelsElement ? JSON.parse(labelsElement.textContent) : [];
+        const chartValues = valuesElement ? JSON.parse(valuesElement.textContent) : [];
+
+        const ctx = document.getElementById('orderChart');
+
+        if (ctx && chartLabels.length > 0) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Orders',
+                        data: chartValues,
+                        backgroundColor: '#06b6d4',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        const stockBars = document.querySelectorAll('.stock-bar');
+        stockBars.forEach((bar) => {
+            const width = bar.getAttribute('data-width') || '0';
+            bar.style.width = width + '%';
+        });
+    </script>
+
+</body>
+</html>

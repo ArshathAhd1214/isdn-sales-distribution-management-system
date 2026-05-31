@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISDN System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Navbar -->
+    <nav class="bg-slate-950 text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500 flex items-center justify-center font-bold text-lg">
+                    I
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold leading-tight">ISDN Distribution System</h1>
+                    <p class="text-xs text-slate-300">IslandLink Sales Distribution Network</p>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+                <a href="/" class="hover:text-cyan-400 transition">Home</a>
+                <a href="#features" class="hover:text-cyan-400 transition">Features</a>
+                <a href="#services" class="hover:text-cyan-400 transition">Services</a>
+                <a href="#feedback" class="hover:text-cyan-400 transition">Feedback</a>
+                <a href="/login" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-5 py-2 rounded-lg transition font-semibold">
+                    Login
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-cyan-900 text-white">
+        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_right,_#22d3ee,_transparent_35%)]"></div>
+
+        <div class="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center relative z-10">
+            <div>
+                <span class="inline-block bg-white/10 text-cyan-300 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                    Smart Distribution Management Platform
+                </span>
+
+                <h2 class="text-4xl md:text-5xl font-extrabold leading-tight mb-6">
+                    Modern Sales, Inventory and Delivery Control in One System
+                </h2>
+
+                <p class="text-slate-200 text-lg leading-8 mb-8">
+                    ISDN centralizes product management, customer orders, stock monitoring,
+                    and delivery tracking into one powerful platform for customers, staff and administrators.
+                </p>
+
+                <div class="flex flex-wrap gap-4">
+                    <a href="/login" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-6 py-3 rounded-xl font-semibold shadow-lg transition">
+                        Login to System
+                    </a>
+                    <a href="#features" class="border border-white/30 hover:bg-white/10 px-6 py-3 rounded-xl font-semibold transition">
+                        Explore Features
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 mt-10">
+                    <div class="bg-white/10 rounded-xl p-4 text-center">
+                        <h3 class="text-2xl font-bold">5+</h3>
+                        <p class="text-sm text-slate-300">Regional Centers</p>
+                    </div>
+                    <div class="bg-white/10 rounded-xl p-4 text-center">
+                        <h3 class="text-2xl font-bold">5000+</h3>
+                        <p class="text-sm text-slate-300">Retail Outlets</p>
+                    </div>
+                    <div class="bg-white/10 rounded-xl p-4 text-center">
+                        <h3 class="text-2xl font-bold">24/7</h3>
+                        <p class="text-sm text-slate-300">System Access</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80"
+                     alt="Warehouse"
+                     class="rounded-2xl shadow-2xl h-64 w-full object-cover">
+
+                <img src="https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=800&q=80"
+                     alt="Retail operations"
+                     class="rounded-2xl shadow-2xl h-64 w-full object-cover mt-10">
+
+                <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=800&q=80"
+                     alt="Team management"
+                     class="rounded-2xl shadow-2xl h-64 w-full object-cover -mt-6">
+
+                <img src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=800&q=80"
+                     alt="Delivery management"
+                     class="rounded-2xl shadow-2xl h-64 w-full object-cover">
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Overview -->
+    <section class="py-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                    <h3 class="text-sm font-semibold text-cyan-600 mb-2">Order Visibility</h3>
+                    <p class="text-slate-700 font-medium">Track orders from placement to delivery.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                    <h3 class="text-sm font-semibold text-cyan-600 mb-2">Real-Time Stock</h3>
+                    <p class="text-slate-700 font-medium">Centralized inventory across all branches.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                    <h3 class="text-sm font-semibold text-cyan-600 mb-2">Role-Based Access</h3>
+                    <p class="text-slate-700 font-medium">Separate workflows for customer, staff, and admin.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                    <h3 class="text-sm font-semibold text-cyan-600 mb-2">Management Insights</h3>
+                    <p class="text-slate-700 font-medium">Monitor performance and operations with ease.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="text-cyan-600 font-semibold uppercase tracking-wider text-sm">Core Features</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-3 mb-4">Everything Needed for a Professional Distribution Platform</h2>
+                <p class="text-slate-600 text-lg">
+                    Manage products, process orders, control stock movement, monitor deliveries and support decision-making from one unified system.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-slate-50 p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-lg transition">
+                    <div class="w-14 h-14 bg-cyan-100 text-cyan-700 rounded-xl flex items-center justify-center text-2xl mb-5">📦</div>
+                    <h3 class="text-xl font-bold mb-3">Product Management</h3>
+                    <p class="text-slate-600 leading-7">
+                        Add products, update categories, manage pricing, and maintain stock availability with better control and visibility.
+                    </p>
+                </div>
+
+                <div class="bg-slate-50 p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-lg transition">
+                    <div class="w-14 h-14 bg-cyan-100 text-cyan-700 rounded-xl flex items-center justify-center text-2xl mb-5">🛒</div>
+                    <h3 class="text-xl font-bold mb-3">Order Processing</h3>
+                    <p class="text-slate-600 leading-7">
+                        Allow customers to place orders quickly while staff can review, confirm, and manage order progress efficiently.
+                    </p>
+                </div>
+
+                <div class="bg-slate-50 p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-lg transition">
+                    <div class="w-14 h-14 bg-cyan-100 text-cyan-700 rounded-xl flex items-center justify-center text-2xl mb-5">🚚</div>
+                    <h3 class="text-xl font-bold mb-3">Delivery Tracking</h3>
+                    <p class="text-slate-600 leading-7">
+                        Monitor delivery stages from dispatch to completion and improve visibility for customers and staff.
+                    </p>
+                </div>
+
+                <div class="bg-slate-50 p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-lg transition">
+                    <div class="w-14 h-14 bg-cyan-100 text-cyan-700 rounded-xl flex items-center justify-center text-2xl mb-5">👥</div>
+                    <h3 class="text-xl font-bold mb-3">User Access Control</h3>
+                    <p class="text-slate-600 leading-7">
+                        Secure login and role-based access ensure each user sees only the tools and information relevant to their role.
+                    </p>
+                </div>
+
+                <div class="bg-slate-50 p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-lg transition">
+                    <div class="w-14 h-14 bg-cyan-100 text-cyan-700 rounded-xl flex items-center justify-center text-2xl mb-5">📊</div>
+                    <h3 class="text-xl font-bold mb-3">Dashboard Monitoring</h3>
+                    <p class="text-slate-600 leading-7">
+                        View quick performance indicators such as total orders, stock levels, pending deliveries, and operational summaries.
+                    </p>
+                </div>
+
+                <div class="bg-slate-50 p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-lg transition">
+                    <div class="w-14 h-14 bg-cyan-100 text-cyan-700 rounded-xl flex items-center justify-center text-2xl mb-5">🔒</div>
+                    <h3 class="text-xl font-bold mb-3">Secure Operations</h3>
+                    <p class="text-slate-600 leading-7">
+                        Support secure access, protected user sessions, and controlled information flow across the whole platform.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services / Workflow -->
+    <section id="services" class="py-20 bg-slate-100">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <span class="text-cyan-600 font-semibold uppercase tracking-wider text-sm">System Workflow</span>
+                    <h2 class="text-3xl md:text-4xl font-bold mt-3 mb-6">From Product Listing to Final Delivery</h2>
+                    <p class="text-slate-600 text-lg leading-8 mb-8">
+                        The platform supports the complete operational flow, helping ISDN reduce manual work and improve accuracy in every stage of the process.
+                    </p>
+
+                    <div class="space-y-5">
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-full bg-cyan-500 text-white flex items-center justify-center font-bold">1</div>
+                            <div>
+                                <h3 class="font-bold text-lg">Customer Login</h3>
+                                <p class="text-slate-600">Users securely enter the system based on their assigned roles.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-full bg-cyan-500 text-white flex items-center justify-center font-bold">2</div>
+                            <div>
+                                <h3 class="font-bold text-lg">Browse Products</h3>
+                                <p class="text-slate-600">Customers view products, pricing, and availability before placing an order.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-full bg-cyan-500 text-white flex items-center justify-center font-bold">3</div>
+                            <div>
+                                <h3 class="font-bold text-lg">Order Processing</h3>
+                                <p class="text-slate-600">Staff review, manage and update order progress in the central system.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-full bg-cyan-500 text-white flex items-center justify-center font-bold">4</div>
+                            <div>
+                                <h3 class="font-bold text-lg">Delivery Completion</h3>
+                                <p class="text-slate-600">Customers track delivery progress while management monitors overall operations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80"
+                         alt="Business analytics"
+                         class="rounded-2xl h-56 w-full object-cover shadow-md">
+                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80"
+                         alt="System workflow"
+                         class="rounded-2xl h-56 w-full object-cover shadow-md mt-10">
+                    <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=800&q=80"
+                         alt="Team collaboration"
+                         class="rounded-2xl h-56 w-full object-cover shadow-md -mt-4">
+                    <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80"
+                         alt="Operations"
+                         class="rounded-2xl h-56 w-full object-cover shadow-md">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feedback / Testimonials -->
+    <section id="feedback" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="text-cyan-600 font-semibold uppercase tracking-wider text-sm">User Feedback</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-3 mb-4">What Users Say About the Platform</h2>
+                <p class="text-slate-600 text-lg">
+                    A more structured digital system improves visibility, speed, and confidence in daily distribution operations.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-slate-50 border border-slate-200 p-8 rounded-2xl shadow-sm">
+                    <div class="text-cyan-500 text-3xl mb-4">★★★★★</div>
+                    <p class="text-slate-600 leading-7 mb-6">
+                        “The system gives us a much clearer view of orders and stock. It reduces confusion and helps staff respond faster.”
+                    </p>
+                    <div>
+                        <h4 class="font-bold">Regional Staff Member</h4>
+                        <p class="text-sm text-slate-500">Operations Team</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 p-8 rounded-2xl shadow-sm">
+                    <div class="text-cyan-500 text-3xl mb-4">★★★★★</div>
+                    <p class="text-slate-600 leading-7 mb-6">
+                        “A centralized dashboard makes management easier. It is better than relying on spreadsheets and manual follow-up.”
+                    </p>
+                    <div>
+                        <h4 class="font-bold">Head Office User</h4>
+                        <p class="text-sm text-slate-500">Management Level</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 p-8 rounded-2xl shadow-sm">
+                    <div class="text-cyan-500 text-3xl mb-4">★★★★★</div>
+                    <p class="text-slate-600 leading-7 mb-6">
+                        “Tracking order status in one place improves customer experience and gives more confidence in delivery progress.”
+                    </p>
+                    <div>
+                        <h4 class="font-bold">Retail Customer</h4>
+                        <p class="text-sm text-slate-500">Registered Buyer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-20 bg-slate-950 text-white">
+        <div class="max-w-5xl mx-auto text-center px-6">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                Ready to Access the ISDN Platform?
+            </h2>
+            <p class="text-slate-300 text-lg mb-8 leading-8">
+                Log in to manage products, process orders, monitor deliveries, and support more efficient distribution operations.
+            </p>
+            <a href="/login" class="inline-block bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-8 py-4 rounded-xl font-bold shadow-lg transition">
+                Go to Login
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-300">
+        <div class="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-4 gap-8">
+            <div>
+                <h3 class="text-white text-lg font-bold mb-4">ISDN System</h3>
+                <p class="text-sm leading-7">
+                    Centralized sales distribution management system for customers, staff, and administrative users.
+                </p>
+            </div>
+
+            <div>
+                <h4 class="text-white font-semibold mb-4">Navigation</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/" class="hover:text-cyan-400">Home</a></li>
+                    <li><a href="/login" class="hover:text-cyan-400">Login</a></li>
+                    <li><a href="#features" class="hover:text-cyan-400">Features</a></li>
+                    <li><a href="#feedback" class="hover:text-cyan-400">Feedback</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-semibold mb-4">System Modules</h4>
+                <ul class="space-y-2 text-sm">
+                    <li>Authentication</li>
+                    <li>Product Management</li>
+                    <li>Order Processing</li>
+                    <li>Delivery Tracking</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-semibold mb-4">Contact</h4>
+                <p class="text-sm leading-7">
+                    ISDN Head Office<br>
+                    Central Operations Division<br>
+                    Island-wide Distribution Management
+                </p>
+            </div>
+        </div>
+
+        <div class="border-t border-slate-800 text-center py-4 text-sm text-slate-400">
+            © 2026 ISDN Distribution System. All rights reserved.
+        </div>
+    </footer>
+
+</body>
+</html>

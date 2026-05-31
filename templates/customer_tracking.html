@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Deliveries | ISDN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-950 text-white">
+    <div class="relative overflow-hidden min-h-screen">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.16),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,0.16),transparent_30%)]"></div>
+        <div class="relative max-w-7xl mx-auto px-6 py-8">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
+                <div>
+                    <div class="inline-flex items-center gap-2 bg-white/10 border border-white/10 rounded-full px-4 py-2 text-sm text-amber-300 mb-4">
+                        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                        Delivery Tracking
+                    </div>
+                    <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Track Deliveries</h1>
+                    <p class="text-slate-300 mt-2 max-w-2xl">Follow delivery progress for every order with clear status, estimated date, and the latest tracking note.</p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <a href="{{ url_for('customer_dashboard') }}" class="bg-white/10 border border-white/10 hover:bg-white/15 px-5 py-3 rounded-xl transition">Dashboard</a>
+                    <a href="{{ url_for('customer_orders') }}" class="bg-white/10 border border-white/10 hover:bg-white/15 px-5 py-3 rounded-xl transition">My Orders</a>
+                    <a href="{{ url_for('customer_products') }}" class="bg-white/10 border border-white/10 hover:bg-white/15 px-5 py-3 rounded-xl transition">Browse Products</a>
+                </div>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="space-y-3 mb-6">
+                        {% for category, message in messages %}
+                            <div class="rounded-2xl border px-4 py-3 {{ 'bg-red-500/10 border-red-400/30 text-red-200' if category == 'error' else 'bg-emerald-500/10 border-emerald-400/30 text-emerald-200' }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="GET" action="{{ url_for('customer_tracking') }}" class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-5 mb-8 shadow-xl">
+                <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4">
+                    <input type="text" name="order_id" value="{{ order_filter }}" placeholder="Track by order ID" class="w-full rounded-2xl bg-slate-900/70 border border-white/10 px-4 py-3 outline-none focus:border-amber-400">
+                    <button type="submit" class="rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 px-6 py-3 font-semibold">Search Tracking</button>
+                </div>
+            </form>
+
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+                <div class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-6 shadow-xl"><p class="text-sm text-slate-300">Total</p><h3 class="text-3xl font-bold mt-2">{{ total_deliveries }}</h3></div>
+                <div class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-6 shadow-xl"><p class="text-sm text-slate-300">Pending</p><h3 class="text-3xl font-bold mt-2 text-slate-200">{{ pending_count }}</h3></div>
+                <div class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-6 shadow-xl"><p class="text-sm text-slate-300">Processing</p><h3 class="text-3xl font-bold mt-2 text-cyan-300">{{ processing_count }}</h3></div>
+                <div class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-6 shadow-xl"><p class="text-sm text-slate-300">Out for Delivery</p><h3 class="text-3xl font-bold mt-2 text-amber-300">{{ out_for_delivery_count }}</h3></div>
+                <div class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-6 shadow-xl"><p class="text-sm text-slate-300">Delivered</p><h3 class="text-3xl font-bold mt-2 text-emerald-300">{{ delivered_count }}</h3></div>
+            </div>
+
+            {% if deliveries %}
+                <div class="space-y-6">
+                    {% for delivery in deliveries %}
+                        <div class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-6 shadow-xl">
+                            <div class="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-6 mb-6">
+                                <div>
+                                    <div class="flex flex-wrap items-center gap-3 mb-3">
+                                        <h2 class="text-2xl font-bold">Order #{{ delivery.order_id }}</h2>
+                                        <span class="px-3 py-1 rounded-full text-sm border {% if delivery.delivery_status == 'Delivered' %}bg-emerald-500/10 border-emerald-400/30 text-emerald-200{% elif delivery.delivery_status == 'Out for Delivery' %}bg-amber-500/10 border-amber-400/30 text-amber-200{% elif delivery.delivery_status == 'Processing' %}bg-cyan-500/10 border-cyan-400/30 text-cyan-200{% else %}bg-slate-500/10 border-slate-400/30 text-slate-200{% endif %}">{{ delivery.delivery_status }}</span>
+                                        <span class="px-3 py-1 rounded-full text-sm border {% if delivery.order_status == 'Delivered' %}bg-emerald-500/10 border-emerald-400/30 text-emerald-200{% elif delivery.order_status == 'Cancelled' %}bg-red-500/10 border-red-400/30 text-red-200{% elif delivery.order_status == 'Out for Delivery' %}bg-amber-500/10 border-amber-400/30 text-amber-200{% else %}bg-cyan-500/10 border-cyan-400/30 text-cyan-200{% endif %}">Order: {{ delivery.order_status }}</span>
+                                    </div>
+                                    <p class="text-slate-300">Delivery ID: {{ delivery.delivery_id }}</p>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 xl:w-[520px] text-sm">
+                                    <div class="rounded-2xl bg-slate-900/50 border border-white/10 p-4"><p class="text-slate-400">Order Date</p><p class="mt-2 font-medium">{{ delivery.order_date_display }}</p></div>
+                                    <div class="rounded-2xl bg-slate-900/50 border border-white/10 p-4"><p class="text-slate-400">Estimated Date</p><p class="mt-2 font-medium">{{ delivery.estimated_date_display }}</p></div>
+                                    <div class="rounded-2xl bg-slate-900/50 border border-white/10 p-4"><p class="text-slate-400">Delivered Date</p><p class="mt-2 font-medium">{{ delivery.delivered_date_display }}</p></div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6 text-sm">
+                                <div class="rounded-2xl bg-slate-900/40 border border-white/10 p-4">
+                                    <p class="text-slate-400">Stage 1</p>
+                                    <p class="mt-2 font-medium {{ 'text-emerald-300' if delivery.step >= 1 else 'text-slate-400' }}">Pending</p>
+                                </div>
+                                <div class="rounded-2xl bg-slate-900/40 border border-white/10 p-4">
+                                    <p class="text-slate-400">Stage 2</p>
+                                    <p class="mt-2 font-medium {{ 'text-emerald-300' if delivery.step >= 2 else 'text-slate-400' }}">Processing</p>
+                                </div>
+                                <div class="rounded-2xl bg-slate-900/40 border border-white/10 p-4">
+                                    <p class="text-slate-400">Stage 3</p>
+                                    <p class="mt-2 font-medium {{ 'text-emerald-300' if delivery.step >= 3 else 'text-slate-400' }}">Out for Delivery</p>
+                                </div>
+                                <div class="rounded-2xl bg-slate-900/40 border border-white/10 p-4">
+                                    <p class="text-slate-400">Stage 4</p>
+                                    <p class="mt-2 font-medium {{ 'text-emerald-300' if delivery.step >= 4 else 'text-slate-400' }}">Delivered</p>
+                                </div>
+                            </div>
+
+                            <div class="rounded-2xl bg-slate-900/40 border border-white/10 p-4 mb-4">
+                                <p class="text-slate-400 text-sm mb-2">Tracking Note</p>
+                                <p class="text-slate-200 leading-7">{{ delivery.tracking_note }}</p>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                <p class="text-lg font-semibold text-white">Order Total: LKR {{ '%.2f'|format(delivery.total_amount) }}</p>
+                                <div class="flex flex-wrap gap-3">
+                                    <a href="{{ url_for('customer_orders', order_id=delivery.order_id) }}" class="rounded-2xl bg-white/10 border border-white/10 hover:bg-white/15 px-5 py-3 transition">View Order</a>
+                                    <a href="{{ url_for('customer_products') }}" class="rounded-2xl bg-cyan-600 hover:bg-cyan-500 px-5 py-3 transition">Shop Again</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-10 shadow-xl text-center">
+                    <div class="text-6xl mb-4">🚚</div>
+                    <h2 class="text-2xl font-bold mb-3">No delivery records found</h2>
+                    <p class="text-slate-300 max-w-2xl mx-auto mb-6">You do not have any tracked deliveries yet, or your order search did not match any delivery.</p>
+                    <a href="{{ url_for('customer_orders') }}" class="inline-flex items-center gap-2 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 px-6 py-3 font-semibold transition">Go to My Orders <span>→</span></a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products | ISDN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto p-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-800">Browse Products</h1>
+                <p class="text-slate-500 mt-1">Search products and open the details page.</p>
+            </div>
+            <div class="flex gap-3">
+                <a href="{{ url_for('customer_cart') }}" class="bg-cyan-600 text-white px-5 py-3 rounded-xl hover:bg-cyan-500 transition">View Cart</a>
+                <a href="{{ url_for('customer_orders') }}" class="bg-slate-900 text-white px-5 py-3 rounded-xl hover:bg-slate-800 transition">My Orders</a>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 rounded-lg px-4 py-3 text-sm font-medium {% if category == 'error' %}bg-red-100 text-red-700 border border-red-200{% else %}bg-green-100 text-green-700 border border-green-200{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="GET" action="{{ url_for('customer_products') }}" class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 mb-8 grid md:grid-cols-4 gap-4">
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-slate-700 mb-2">Search</label>
+                <input type="text" name="search" value="{{ search }}" placeholder="Search by product name" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
+                <select name="category" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
+                    <option value="">All Categories</option>
+                    {% for item in categories %}
+                        <option value="{{ item }}" {% if category == item %}selected{% endif %}>{{ item }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="flex items-end">
+                <button type="submit" class="w-full bg-slate-900 text-white px-5 py-3 rounded-xl hover:bg-slate-800 transition">Filter</button>
+            </div>
+        </form>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {% if products %}
+                {% for product in products %}
+                    <div class="rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-lg transition">
+                        <a href="{{ url_for('customer_product_detail', product_id=product[0]) }}" class="block">
+                            <div class="h-56 bg-slate-50 overflow-hidden">
+                              {% if product[5] %}
+    <img src="{{ url_for('static', filename=product[5]) }}" alt="{{ product[1] }}" class="w-full h-full object-cover">
+{% elif product[2] == "Beverages" %}
+    <img src="https://images.unsplash.com/photo-1543253539-6e3d44dbe3b5?auto=format&fit=crop&w=1200&q=80" alt="{{ product[1] }}" class="w-full h-full object-cover">
+{% elif product[2] == "Personal Care" %}
+    <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80" alt="{{ product[1] }}" class="w-full h-full object-cover">
+{% elif product[2] == "Home Cleaning" %}
+    <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1200&q=80" alt="{{ product[1] }}" class="w-full h-full object-cover">
+{% elif product[2] == "Packaged Foods" %}
+    <img src="https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=1200&q=80" alt="{{ product[1] }}" class="w-full h-full object-cover">
+{% else %}
+    <img src="https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1200&q=80" alt="{{ product[1] }}" class="w-full h-full object-cover">
+{% endif %}
+                            </div>
+                        </a>
+
+                        <div class="p-6">
+                            <div class="flex items-start justify-between gap-4 mb-3">
+                                <span class="inline-block bg-cyan-100 text-cyan-700 px-3 py-1 rounded-full text-sm font-medium">{{ product[2] }}</span>
+                                {% if product[4] == 0 %}
+                                    <span class="text-sm font-medium text-red-600">Out of stock</span>
+                                {% elif product[4] <= 25 %}
+                                    <span class="text-sm font-medium text-amber-600">Low stock</span>
+                                {% else %}
+                                    <span class="text-sm font-medium text-green-600">In stock</span>
+                                {% endif %}
+                            </div>
+
+                            <h2 class="text-xl font-bold text-slate-800 mb-2">{{ product[1] }}</h2>
+                            <p class="text-cyan-600 text-2xl font-bold mb-2">Rs. {{ '%.2f'|format(product[3]) }}</p>
+                            <p class="text-slate-500 text-sm mb-5">Available stock: {{ product[4] }}</p>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <a href="{{ url_for('customer_product_detail', product_id=product[0]) }}" class="text-center bg-slate-900 text-white py-3 rounded-xl hover:bg-slate-800 transition">Browse Product</a>
+                                <form method="POST" action="{{ url_for('add_to_cart', product_id=product[0]) }}">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="w-full bg-cyan-600 text-white py-3 rounded-xl hover:bg-cyan-500 transition {% if product[4] == 0 %}opacity-50 cursor-not-allowed{% endif %}" {% if product[4] == 0 %}disabled{% endif %}>Add to Cart</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="md:col-span-2 xl:col-span-3 bg-white rounded-3xl border border-slate-200 p-12 text-center shadow-sm">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">No products found</h2>
+                    <p class="text-slate-500">Try changing your search or category filter.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

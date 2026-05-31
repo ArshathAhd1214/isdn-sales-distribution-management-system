@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard | ISDN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-950 text-white">
+
+    <div class="relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(14,165,233,0.18),transparent_30%)]"></div>
+
+        <div class="relative max-w-7xl mx-auto px-6 py-8">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
+                <div>
+                    <div class="inline-flex items-center gap-2 bg-white/10 border border-white/10 rounded-full px-4 py-2 text-sm text-cyan-300 mb-4">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                        Customer Portal
+                    </div>
+                    <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Welcome back, {{ name }}</h1>
+                    <p class="text-slate-300 mt-2 max-w-2xl">
+                        Manage your orders, browse available products, and track delivery progress from one place.
+                    </p>
+                </div>
+
+                <div class="flex gap-3">
+                    <a href="{{ url_for('home') }}" class="bg-white/10 border border-white/10 hover:bg-white/15 text-white px-5 py-3 rounded-xl transition">
+                        Home
+                    </a>
+                    <a href="{{ url_for('logout') }}" class="bg-red-600 hover:bg-red-500 text-white px-5 py-3 rounded-xl transition">
+                        Logout
+                    </a>
+                </div>
+            </div>
+
+            <!-- Hero Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
+                    <p class="text-sm text-slate-300">Fast Access</p>
+                    <h3 class="text-3xl font-bold mt-2">24/7</h3>
+                    <p class="text-sm text-cyan-300 mt-2">Browse products anytime</p>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
+                    <p class="text-sm text-slate-300">Order Control</p>
+                    <h3 class="text-3xl font-bold mt-2">Live</h3>
+                    <p class="text-sm text-cyan-300 mt-2">Track statuses in real time</p>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl">
+                    <p class="text-sm text-slate-300">Delivery Updates</p>
+                    <h3 class="text-3xl font-bold mt-2">Smart</h3>
+                    <p class="text-sm text-cyan-300 mt-2">Stay informed on every order</p>
+                </div>
+            </div>
+
+            <!-- Main Feature Cards -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+                <a href="{{ url_for('customer_products') }}" class="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-7 shadow-xl transition hover:-translate-y-1 hover:bg-white/15">
+                    <div class="absolute top-0 right-0 h-24 w-24 rounded-full bg-cyan-400/10 blur-2xl"></div>
+                    <div class="relative">
+                        <div class="w-14 h-14 rounded-2xl bg-cyan-500/20 border border-cyan-400/20 flex items-center justify-center text-2xl mb-5">
+                            🛒
+                        </div>
+                        <h2 class="text-2xl font-bold mb-2">Browse Products</h2>
+                        <p class="text-slate-300 leading-7">
+                            Explore available products, view prices, and find the items you need quickly.
+                        </p>
+                        <div class="mt-6 inline-flex items-center gap-2 text-cyan-300 font-medium">
+                            Open catalog
+                            <span class="transition group-hover:translate-x-1">→</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="{{ url_for('customer_orders') }}" class="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-7 shadow-xl transition hover:-translate-y-1 hover:bg-white/15">
+                    <div class="absolute top-0 right-0 h-24 w-24 rounded-full bg-emerald-400/10 blur-2xl"></div>
+                    <div class="relative">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-400/20 flex items-center justify-center text-2xl mb-5">
+                            📦
+                        </div>
+                        <h2 class="text-2xl font-bold mb-2">My Orders</h2>
+                        <p class="text-slate-300 leading-7">
+                            Check your previous and current orders, follow progress, and review order details.
+                        </p>
+                        <div class="mt-6 inline-flex items-center gap-2 text-emerald-300 font-medium">
+                            View orders
+                            <span class="transition group-hover:translate-x-1">→</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/customer/tracking" class="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-7 shadow-xl transition hover:-translate-y-1 hover:bg-white/15">
+                    <div class="absolute top-0 right-0 h-24 w-24 rounded-full bg-amber-400/10 blur-2xl"></div>
+                    <div class="relative">
+                        <div class="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-400/20 flex items-center justify-center text-2xl mb-5">
+                            🚚
+                        </div>
+                        <h2 class="text-2xl font-bold mb-2">Track Deliveries</h2>
+                        <p class="text-slate-300 leading-7">
+                            Stay updated with delivery progress, tracking notes, and expected arrival details.
+                        </p>
+                        <div class="mt-6 inline-flex items-center gap-2 text-amber-300 font-medium">
+                            Track now
+                            <span class="transition group-hover:translate-x-1">→</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Lower Section -->
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                <div class="xl:col-span-2 rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-8 shadow-xl">
+                    <div class="flex items-start justify-between gap-4 mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold">Why use this portal?</h3>
+                            <p class="text-slate-300 mt-2">
+                                Built to make ordering and tracking easier, faster, and more transparent.
+                            </p>
+                        </div>
+                        <div class="hidden md:flex w-14 h-14 rounded-2xl bg-white/10 items-center justify-center text-2xl">
+                            ✨
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="rounded-2xl bg-slate-900/40 border border-white/10 p-5">
+                            <h4 class="font-semibold mb-2 text-cyan-300">Easy Ordering</h4>
+                            <p class="text-sm text-slate-300 leading-6">
+                                Browse products, compare options, and place orders in a few steps.
+                            </p>
+                        </div>
+
+                        <div class="rounded-2xl bg-slate-900/40 border border-white/10 p-5">
+                            <h4 class="font-semibold mb-2 text-cyan-300">Clear Tracking</h4>
+                            <p class="text-sm text-slate-300 leading-6">
+                                Get current delivery status, tracking notes, and expected dates in one place.
+                            </p>
+                        </div>
+
+                        <div class="rounded-2xl bg-slate-900/40 border border-white/10 p-5">
+                            <h4 class="font-semibold mb-2 text-cyan-300">Customer Control</h4>
+                            <p class="text-sm text-slate-300 leading-6">
+                                Monitor your order activity without depending on manual updates.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-8 shadow-xl">
+                    <h3 class="text-2xl font-bold mb-4">Quick Actions</h3>
+
+                    <div class="space-y-3">
+                        <a href="{{ url_for('customer_products') }}" class="flex items-center justify-between rounded-2xl bg-slate-900/40 border border-white/10 px-4 py-4 hover:bg-slate-900/60 transition">
+                            <span>Browse catalog</span>
+                            <span>→</span>
+                        </a>
+
+                        <a href="{{ url_for('customer_orders') }}" class="flex items-center justify-between rounded-2xl bg-slate-900/40 border border-white/10 px-4 py-4 hover:bg-slate-900/60 transition">
+                            <span>Check my orders</span>
+                            <span>→</span>
+                        </a>
+
+                        <a href="/customer/tracking" class="flex items-center justify-between rounded-2xl bg-slate-900/40 border border-white/10 px-4 py-4 hover:bg-slate-900/60 transition">
+                            <span>Track deliveries</span>
+                            <span>→</span>
+                        </a>
+                    </div>
+
+                    <div class="mt-6 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 p-4">
+                        <p class="text-sm text-cyan-200 leading-6">
+                            Need something quickly? Start with the product catalog and place your next order directly from the portal.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

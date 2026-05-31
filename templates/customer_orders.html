@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders | ISDN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-950 text-white">
+    <div class="relative overflow-hidden min-h-screen">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.15),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(16,185,129,0.15),transparent_30%)]"></div>
+        <div class="relative max-w-7xl mx-auto px-6 py-8">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
+                <div>
+                    <div class="inline-flex items-center gap-2 bg-white/10 border border-white/10 rounded-full px-4 py-2 text-sm text-emerald-300 mb-4">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                        Customer Orders
+                    </div>
+                    <h1 class="text-3xl md:text-4xl font-bold tracking-tight">My Orders</h1>
+                    <p class="text-slate-300 mt-2 max-w-2xl">Review your order history, current status, delivery progress, invoice details, and payment progress from one clean page.</p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <a href="{{ url_for('customer_dashboard') }}" class="bg-white/10 border border-white/10 hover:bg-white/15 px-5 py-3 rounded-xl transition">Dashboard</a>
+                    <a href="{{ url_for('customer_products') }}" class="bg-white/10 border border-white/10 hover:bg-white/15 px-5 py-3 rounded-xl transition">Browse Products</a>
+                    <a href="{{ url_for('customer_cart') }}" class="bg-white/10 border border-white/10 hover:bg-white/15 px-5 py-3 rounded-xl transition">Cart</a>
+                    <a href="{{ url_for('customer_tracking') }}" class="bg-cyan-600 hover:bg-cyan-500 px-5 py-3 rounded-xl transition">Track Deliveries</a>
+                </div>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="space-y-3 mb-6">
+                        {% for category, message in messages %}
+                            <div class="rounded-2xl border px-4 py-3 {{ 'bg-red-500/10 border-red-400/30 text-red-200' if category == 'error' else 'bg-emerald-500/10 border-emerald-400/30 text-emerald-200' }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="GET" action="{{ url_for('customer_orders') }}" class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-5 mb-8 shadow-xl">
+                <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4">
+                    <input type="text" name="order_id" value="{{ order_filter }}" placeholder="Search by order ID" class="w-full rounded-2xl bg-slate-900/70 border border-white/10 px-4 py-3 outline-none focus:border-emerald-400">
+                    <button type="submit" class="rounded-2xl bg-emerald-600 hover:bg-emerald-500 px-6 py-3 font-medium">Search Orders</button>
+                </div>
+            </form>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-6 shadow-xl">
+                    <p class="text-sm text-slate-300">Total Orders</p>
+                    <h3 class="text-3xl font-bold mt-2">{{ total_orders }}</h3>
+                </div>
+                <div class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-6 shadow-xl">
+                    <p class="text-sm text-slate-300">Active</p>
+                    <h3 class="text-3xl font-bold mt-2 text-cyan-300">{{ active_count }}</h3>
+                </div>
+                <div class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-6 shadow-xl">
+                    <p class="text-sm text-slate-300">Delivered</p>
+                    <h3 class="text-3xl font-bold mt-2 text-emerald-300">{{ delivered_count }}</h3>
+                </div>
+                <div class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-6 shadow-xl">
+                    <p class="text-sm text-slate-300">Cancelled</p>
+                    <h3 class="text-3xl font-bold mt-2 text-red-300">{{ cancelled_count }}</h3>
+                </div>
+            </div>
+
+            {% if orders %}
+                <div class="space-y-6">
+                    {% for order in orders %}
+                        <div class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-6 shadow-xl">
+                            <div class="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-6">
+                                <div class="space-y-4 flex-1">
+                                    <div class="flex flex-wrap items-center gap-3">
+                                        <h2 class="text-2xl font-bold">Order #{{ order.order_id }}</h2>
+
+                                        <span class="px-3 py-1 rounded-full text-sm border {% if order.order_status == 'Delivered' %}bg-emerald-500/10 border-emerald-400/30 text-emerald-200{% elif order.order_status == 'Cancelled' %}bg-red-500/10 border-red-400/30 text-red-200{% elif order.order_status == 'Out for Delivery' %}bg-amber-500/10 border-amber-400/30 text-amber-200{% else %}bg-cyan-500/10 border-cyan-400/30 text-cyan-200{% endif %}">
+                                            {{ order.order_status }}
+                                        </span>
+
+                                        <span class="px-3 py-1 rounded-full text-sm border {% if order.delivery_status == 'Delivered' %}bg-emerald-500/10 border-emerald-400/30 text-emerald-200{% elif order.delivery_status == 'Out for Delivery' %}bg-amber-500/10 border-amber-400/30 text-amber-200{% elif order.delivery_status == 'Processing' %}bg-cyan-500/10 border-cyan-400/30 text-cyan-200{% else %}bg-slate-500/10 border-slate-400/30 text-slate-200{% endif %}">
+                                            Delivery: {{ order.delivery_status }}
+                                        </span>
+
+                                        <span class="px-3 py-1 rounded-full text-sm border {% if order.invoice_status == 'Paid' %}bg-emerald-500/10 border-emerald-400/30 text-emerald-200{% elif order.invoice_status == 'Unpaid' %}bg-amber-500/10 border-amber-400/30 text-amber-200{% else %}bg-slate-500/10 border-slate-400/30 text-slate-200{% endif %}">
+                                            Invoice: {{ order.invoice_status }}
+                                        </span>
+
+                                        <span class="px-3 py-1 rounded-full text-sm border {% if order.payment_status == 'Paid' %}bg-emerald-500/10 border-emerald-400/30 text-emerald-200{% elif order.payment_status == 'Pending' %}bg-amber-500/10 border-amber-400/30 text-amber-200{% elif order.payment_status == 'Cancelled' %}bg-red-500/10 border-red-400/30 text-red-200{% else %}bg-slate-500/10 border-slate-400/30 text-slate-200{% endif %}">
+                                            Payment: {{ order.payment_status }}
+                                        </span>
+                                    </div>
+
+                                    <div class="grid md:grid-cols-3 xl:grid-cols-5 gap-4 text-sm">
+                                        <div class="rounded-2xl bg-slate-900/50 border border-white/10 p-4">
+                                            <p class="text-slate-400">Order Date</p>
+                                            <p class="mt-2 font-medium text-white">{{ order.order_date_display }}</p>
+                                        </div>
+
+                                        <div class="rounded-2xl bg-slate-900/50 border border-white/10 p-4">
+                                            <p class="text-slate-400">Total Amount</p>
+                                            <p class="mt-2 font-medium text-white">LKR {{ '%.2f'|format(order.total_amount) }}</p>
+                                        </div>
+
+                                        <div class="rounded-2xl bg-slate-900/50 border border-white/10 p-4">
+                                            <p class="text-slate-400">Estimated Date</p>
+                                            <p class="mt-2 font-medium text-white">{{ order.estimated_date_display }}</p>
+                                        </div>
+
+                                        <div class="rounded-2xl bg-slate-900/50 border border-white/10 p-4">
+                                            <p class="text-slate-400">Invoice Number</p>
+                                            <p class="mt-2 font-medium text-white">{{ order.invoice_number }}</p>
+                                        </div>
+
+                                        <div class="rounded-2xl bg-slate-900/50 border border-white/10 p-4">
+                                            <p class="text-slate-400">Invoice Date</p>
+                                            <p class="mt-2 font-medium text-white">{{ order.invoice_date_display }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="rounded-2xl bg-slate-900/40 border border-white/10 p-4">
+                                        <p class="text-slate-400 text-sm mb-2">Tracking Note</p>
+                                        <p class="text-slate-200 leading-7">{{ order.tracking_note }}</p>
+                                    </div>
+                                </div>
+
+                             <div class="w-full xl:w-72 space-y-3">
+    <a href="{{ url_for('customer_tracking', order_id=order.order_id) }}" class="block text-center rounded-2xl bg-cyan-600 hover:bg-cyan-500 px-5 py-3 font-medium transition">Track This Order</a>
+
+    {% if order.invoice_id %}
+        <a href="{{ url_for('download_invoice', order_id=order.order_id) }}" class="block text-center rounded-2xl bg-emerald-600 hover:bg-emerald-500 px-5 py-3 font-medium transition">
+            Download Invoice
+        </a>
+    {% else %}
+        <div class="block text-center rounded-2xl bg-slate-700/60 border border-white/10 px-5 py-3 font-medium text-slate-300 cursor-not-allowed">
+            Invoice Not Ready
+        </div>
+    {% endif %}
+
+    <a href="{{ url_for('customer_products') }}" class="block text-center rounded-2xl bg-white/10 border border-white/10 hover:bg-white/15 px-5 py-3 font-medium transition">Browse More Products</a>
+</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl p-10 shadow-xl text-center">
+                    <div class="text-6xl mb-4">📦</div>
+                    <h2 class="text-2xl font-bold mb-3">No orders found</h2>
+                    <p class="text-slate-300 max-w-2xl mx-auto mb-6">You have not placed an order yet, or your search did not match any order ID.</p>
+                    <a href="{{ url_for('customer_products') }}" class="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 px-6 py-3 font-medium transition">Start Shopping <span>→</span></a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
